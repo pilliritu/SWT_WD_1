@@ -1,0 +1,411 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Site</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;800&family=Lora:ital,wght@0,400;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: 'Lora', Georgia, serif;
+      background: #f5f0e8;
+      color: #1a1a1a;
+    }
+
+    #main-nav {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 70px;
+      background: transparent;
+      border-bottom: 1px solid transparent;
+      transition: background 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease, height 0.3s ease;
+    }
+
+    #main-nav.scrolled {
+      background: rgba(245, 240, 232, 0.96);
+      border-color: rgba(0,0,0,0.08);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+      height: 58px;
+    }
+
+    .nav-logo {
+      font-family: 'Syne', sans-serif;
+      font-weight: 800;
+      font-size: 1.25rem;
+      color: #fff;
+      text-decoration: none;
+      letter-spacing: -0.02em;
+      transition: color 0.4s ease;
+    }
+
+    #main-nav.scrolled .nav-logo {
+      color: #1a1a1a;
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      list-style: none;
+      gap: 4px;
+    }
+
+    .nav-links a {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      padding: 8px 14px;
+      border-radius: 6px;
+      color: rgba(255, 255, 255, 0.85);
+      background: transparent;
+      position: relative;
+      transition: color 0.3s ease, background 0.25s ease;
+    }
+
+    #main-nav.scrolled .nav-links a {
+      color: #444;
+    }
+
+    .nav-links a:hover {
+      color: #1a1a1a !important;
+      background: rgba(210, 160, 60, 0.15);
+    }
+
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 4px;
+      left: 14px;
+      right: 14px;
+      height: 2px;
+      background: #c8922a;
+      border-radius: 2px;
+      transform: scaleX(0);
+      transform-origin: left center;
+      transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    .nav-links a:hover::after {
+      transform: scaleX(1);
+    }
+
+    .nav-links a.active {
+      color: #c8922a !important;
+    }
+
+    .nav-links a.active::after {
+      transform: scaleX(1);
+    }
+
+    .nav-cta {
+      font-family: 'Syne', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      text-decoration: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      background: #c8922a;
+      color: #fff !important;
+      transition: background 0.25s ease, transform 0.15s ease;
+    }
+
+    .nav-cta::after {
+      display: none;
+    }
+
+    .nav-cta:hover {
+      background: #a87420 !important;
+      color: #fff !important;
+      transform: translateY(-1px);
+    }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+      background: none;
+      border: none;
+    }
+
+    .hamburger span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #fff;
+      border-radius: 2px;
+      transition: background 0.4s ease, transform 0.3s ease, opacity 0.3s ease;
+    }
+
+    #main-nav.scrolled .hamburger span {
+      background: #1a1a1a;
+    }
+
+    .hamburger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .hamburger.open span:nth-child(2) { opacity: 0; }
+    .hamburger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    @media (max-width: 720px) {
+      .hamburger { display: flex; }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        align-items: stretch;
+        gap: 0;
+        background: rgba(245, 240, 232, 0.98);
+        padding: 16px 0;
+        border-bottom: 1px solid rgba(0,0,0,0.08);
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+      }
+
+      .nav-links.open { display: flex; }
+
+      .nav-links a {
+        color: #444 !important;
+        padding: 14px 40px;
+        border-radius: 0;
+      }
+
+      .nav-cta {
+        margin: 8px 40px 0;
+        text-align: center;
+      }
+    }
+
+    section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 80px 40px 60px;
+      text-align: center;
+    }
+
+    #home {
+      background: linear-gradient(160deg, #1a1a2e 0%, #2c1810 60%, #3d2408 100%);
+      color: #fff;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #home::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+      background-size: 200px;
+      opacity: 0.3;
+      pointer-events: none;
+    }
+
+    #home h1 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2.5rem, 7vw, 5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    #home p {
+      font-style: italic;
+      font-size: 1.15rem;
+      color: rgba(255,255,255,0.65);
+      max-width: 480px;
+      position: relative;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 36px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: rgba(255,255,255,0.4);
+      font-size: 0.75rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      animation: bounce 2s ease-in-out infinite;
+    }
+
+    .scroll-hint::after {
+      content: '↓';
+      font-size: 1.2rem;
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(6px); }
+    }
+
+    #about { background: #f5f0e8; }
+    #work { background: #eee8d8; }
+    #journal { background: #f5f0e8; }
+    #contact { background: #1a1a2e; color: #f5f0e8; }
+
+    .section-label {
+      font-family: 'Syne', sans-serif;
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: #c8922a;
+      margin-bottom: 16px;
+    }
+
+    #contact .section-label { color: rgba(200, 146, 42, 0.8); }
+
+    section h2 {
+      font-family: 'Syne', sans-serif;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      margin-bottom: 20px;
+      color: #1a1a1a;
+    }
+
+    #contact h2 { color: #f5f0e8; }
+
+    section p {
+      font-style: italic;
+      font-size: 1.05rem;
+      color: #666;
+      max-width: 520px;
+      line-height: 1.7;
+    }
+
+    #contact p { color: rgba(245, 240, 232, 0.6); }
+
+    .rule {
+      width: 40px;
+      height: 3px;
+      background: #c8922a;
+      border-radius: 2px;
+      margin: 24px auto 0;
+    }
+  </style>
+</head>
+
+<body>
+<nav id="main-nav">
+  <a href="#home" class="nav-logo">Meridian</a>
+  <button class="hamburger" id="hamburger" aria-label="Toggle menu">
+    <span></span><span></span><span></span>
+  </button>
+  <ul class="nav-links" id="nav-links">
+    <li><a href="#home" class="active">Home</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#journal">Journal</a></li>
+    <li><a href="#contact" class="nav-cta">Get in touch</a></li>
+  </ul>
+</nav>
+
+<section id="home">
+  <h1>Craft meets<br/>intention.</h1>
+  <p>Scroll down to see the nav transform — or just hover the links up top.</p>
+  <div class="scroll-hint">Scroll</div>
+</section>
+
+<section id="about">
+  <span class="section-label">About</span>
+  <h2>A little<br/>about us.</h2>
+  <p>We're a small team of designers and developers who believe good work is rarely accidental.</p>
+  <div class="rule"></div>
+</section>
+
+<section id="work">
+  <span class="section-label">Work</span>
+  <h2>Things we've<br/>made.</h2>
+  <p>From editorial identities to full digital products.</p>
+  <div class="rule"></div>
+</section>
+
+<section id="journal">
+  <span class="section-label">Journal</span>
+  <h2>Thoughts &amp;<br/>notes.</h2>
+  <p>Writing things down helps us think more clearly.</p>
+  <div class="rule"></div>
+</section>
+
+<section id="contact">
+  <span class="section-label">Contact</span>
+  <h2>Let's talk<br/>about your project.</h2>
+  <p>Drop us a line and we'll get back to you soon.</p>
+  <div class="rule"></div>
+</section>
+
+<script>
+const nav = document.getElementById('main-nav');
+const links = document.querySelectorAll('.nav-links a:not(.nav-cta)');
+const hamburger = document.getElementById('hamburger');
+const navLinks = document.getElementById('nav-links');
+const sections = document.querySelectorAll('section');
+
+window.addEventListener('scroll', () => {
+  if (window.scrollY > 30) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+  updateActiveLink();
+}, { passive: true });
+
+function updateActiveLink() {
+  let current = sections[0].getAttribute('id');
+  sections.forEach(section => {
+    const sectionTop = section.offsetTop - 120;
+    if (window.scrollY >= sectionTop) current = section.getAttribute('id');
+  });
+  links.forEach(link => {
+    const href = link.getAttribute('href').replace('#', '');
+    link.classList.toggle('active', href === current);
+  });
+}
+
+hamburger.addEventListener('click', () => {
+  hamburger.classList.toggle('open');
+  navLinks.classList.toggle('open');
+});
+
+navLinks.querySelectorAll('a').forEach(link => {
+  link.addEventListener('click', () => {
+    hamburger.classList.remove('open');
+    navLinks.classList.remove('open');
+  });
+});
+</script>
+
+</body>
+</html>
